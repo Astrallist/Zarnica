@@ -181,30 +181,107 @@ function createTaskParagraph(task) {
                 text: task.time,
                 alignment: docx.AlignmentType.LEFT,
             }),
-            new docx.Paragraph("", { spacing: { after: 200 }}),
         ];
 
         for (let i =0;i<task.text.length;i++) {
             result.push(        
                 new docx.Paragraph({
-                text: task.text[i],
+                text: `     ${task.text[i]}`,
                 alignment: docx.AlignmentType.LEFT,
+                spacing: {before: 200},
+                outlineLevel: 0,
             }),
         )}
 
         let result2 = result.concat([
-            new docx.Paragraph("", { spacing: { after: 200 }}),
+            new docx.Paragraph("", { spacing: { before: 200 }}),
     
             new docx.Paragraph({
                 alignment: docx.AlignmentType.justified,
                 children: [
-                    new docx.TextRun("Начальник штаба игры"),
-                    new docx.TextRun("____________/Корнеева Е.И",),
+                    new docx.TextRun("Начальник штаба игры  "),
+                    new docx.TextRun("                                                                                          ____________/Корнеева Е.И",),
                 ],
             }),
-    
+
             new docx.Paragraph("", {thematicBreak: true}),
+            new docx.Paragraph("_________________________________________________________________________________________"),
             //ВТОРОЙ
+
+            
+            new docx.Paragraph({
+                //heading: docx.HeadingLevel.HEADING_2,
+                alignment: docx.AlignmentType.CENTER,
+                children: [
+                    new docx.TextRun({
+                        text: task.title,
+                        bold: true,
+                        size: 20,
+                    })
+                ]
+            }),
+            new docx.Paragraph({
+                alignment: docx.AlignmentType.LEFT,
+                children: [
+                    new docx.TextRun({
+                        text: task.team,
+                        size: 20,
+                    })
+                ]
+            }),
+            new docx.Paragraph({
+                alignment: docx.AlignmentType.LEFT,
+                children: [
+                    new docx.TextRun({
+                        text: task.squad,
+                        size: 20,
+                    })
+                ]
+            }),
+            new docx.Paragraph({
+                alignment: docx.AlignmentType.LEFT,
+                children: [
+                    new docx.TextRun({
+                        text: task.units,
+                        size: 20,
+                    })
+                ]
+            }),
+            new docx.Paragraph({
+                alignment: docx.AlignmentType.LEFT,
+                children: [
+                    new docx.TextRun({
+                        text: task.equipment,
+                        size: 20,
+                    })
+                ]
+            }),
+            new docx.Paragraph({
+                alignment: docx.AlignmentType.LEFT,
+                children: [
+                    new docx.TextRun({
+                        text: task.stitching,
+                        size: 20,
+                    })
+                ]
+            }),
+            new docx.Paragraph({
+                alignment: docx.AlignmentType.LEFT,
+                children: [
+                    new docx.TextRun({
+                        text: task.time,
+                        size: 20,
+                    })
+                ]
+            }),
+            
+            
+            
+            
+            
+            
+            
+            
             new docx.Paragraph("", { pageBreakAfter: true, pageBreak: true }), // Разрыв страницы
             new docx.PageBreak(),
         ])
