@@ -1,3 +1,5 @@
+//const { text } = require("stream/consumers");
+
 document.getElementById('processButton').addEventListener('click', async () => {
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
@@ -63,7 +65,7 @@ function parseTasks(text) {
         stitching: "",
         time: "",
         text: [],
-        tasks: "",
+        tasks: [],
         check: "",
         notes: ""
     };
@@ -85,13 +87,14 @@ function parseTasks(text) {
                     stitching: "",
                     time: "",
                     text: [],
-                    tasks: "",
+                    tasks: [],
                     check: "",
                     notes: "" };
             }
             taskContent.title = line;
         } else if (line.startsWith("Взвод:")) {
             taskContent.team = line;
+            console.log(taskContent.team);
         } else if (line.startsWith("Отделение:")) {
             taskContent.squad = line;
         } else if (line.startsWith("Силы:")) {
@@ -106,8 +109,10 @@ function parseTasks(text) {
             const oldText = line;
             const text = oldText.slice(6);
             taskContent.text.push(text);
-        } else if (line.startsWith("Задачи по пунктам посреднику:")) {
-            taskContent.tasks = line;
+        } else if (line.startsWith("Задача посреднику:")) {
+            const oldTask = line;
+            const task = oldTask.slice(18);
+            taskContent.tasks.push(task);
         } else if (line.startsWith("Проверка и оценивание посреднику:")) {
             const oldCheck = line;
             const check = oldCheck.slice(33);
@@ -133,8 +138,6 @@ function parseTasks(text) {
 
 // Функция для создания абзацев
 function createTaskParagraph(task) {
-    console.log(task);
-
 /*
         title: "",
         team: "",
@@ -148,6 +151,7 @@ function createTaskParagraph(task) {
         check: "",
         notes: ""
         */
+
 
         let result = [
             new docx.Paragraph({
@@ -166,6 +170,7 @@ function createTaskParagraph(task) {
                 text: task.team,
                 alignment: docx.AlignmentType.LEFT,
             }),
+
             new docx.Paragraph({
                 text: task.squad,
                 alignment: docx.AlignmentType.LEFT,
@@ -174,18 +179,22 @@ function createTaskParagraph(task) {
                 text: task.units,
                 alignment: docx.AlignmentType.LEFT,
             }),
+
             new docx.Paragraph({
                 text: task.equipment,
                 alignment: docx.AlignmentType.LEFT,
             }),
+
             new docx.Paragraph({
                 text: task.stitching,
                 alignment: docx.AlignmentType.LEFT,
             }),
+
             new docx.Paragraph({
                 text: task.time,
                 alignment: docx.AlignmentType.LEFT,
             }),
+            new docx.Paragraph({ spacing: { before: 200 }}),
         ];
 
         for (let i =0;i<task.text.length;i++) {
@@ -198,7 +207,6 @@ function createTaskParagraph(task) {
                     }),
                 ],
                 alignment: docx.AlignmentType.LEFT,
-                spacing: {before: 200},
                 outlineLevel: 0,
             }),
         )}
@@ -266,13 +274,11 @@ function createTaskParagraph(task) {
                 ],
             }),
 
-            new docx.Paragraph("", {thematicBreak: true}),
-            new docx.Paragraph("_________________________________________________________________________________________"),
+            new docx.Paragraph({thematicBreak: true}),
             //ВТОРОЙ
 
-            
+            new docx.Paragraph("", {thematicBreak: true}),
             new docx.Paragraph({
-                //heading: docx.HeadingLevel.HEADING_2,
                 alignment: docx.AlignmentType.CENTER,
                 children: [
                     new docx.TextRun({
@@ -356,22 +362,57 @@ function createTaskParagraph(task) {
                 outlineLevel: 0,
             }),
         )}
+        result2.push(new docx.Paragraph({
+            spacing: { before: 200 },
+        }),);
 
         //Для посредника
+        if (task.tasks.length !== 0) {
+            result2.push(
+                new docx.Paragraph({
+                    alignment: docx.AlignmentType.LEFT,
+                    children: [
+                        new docx.TextRun({
+                            text: 'Заметки для посредника:',
+                            size: 20,
+                            bold: true,
+                        }),
+                    ]
+                }),
+            );
+            if (task.tasks.length !== 0) {
+                for (let i=0; i<task.tasks.length; i++) {
+                    result2.push(
+                        new docx.Paragraph({
+                            text: task.tasks[i],
+                            alignment: docx.AlignmentType.LEFT,
+                            bullet: {
+                                level: 0
+                            }
+                        }
+                        )
+                    )
+                }
+            }
+
+
+
+
+
+        }
         if (task.check.length !== 0) {
             result2.push(
                 new docx.Paragraph({
                     alignment: docx.AlignmentType.LEFT,
-                    spacing: { before: 200 },
                     children: [
                         new docx.TextRun({
                             text: 'Проверка:',
-                            size: 24,
+                            size: 20,
                             bold: true,
                         }),
                         new docx.TextRun({
                             text: task.check,
-                            size: 24,
+                            size: 20,
                             bold: true,
                         }),
                     ]
@@ -382,16 +423,15 @@ function createTaskParagraph(task) {
             result2.push(
                 new docx.Paragraph({
                     alignment: docx.AlignmentType.LEFT,
-                    spacing: { before: 200 },
                     children: [
                         new docx.TextRun({
                             text: 'Примечания:',
-                            size: 24,
+                            size: 20,
                             bold: true,
                         }),
                         new docx.TextRun({
                             text: task.notes,
-                            size: 24,
+                            size: 20,
                         }),
                     ]
                 }),
@@ -400,7 +440,7 @@ function createTaskParagraph(task) {
 
             
             
-        result2.push(new docx.Paragraph("", { pageBreakAfter: true, pageBreak: true }));    
+        result2.push(new docx.Paragraph({pageBreakBefore: true, keepLines: true}));    
             
             
             
