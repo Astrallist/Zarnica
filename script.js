@@ -109,9 +109,13 @@ function parseTasks(text) {
         } else if (line.startsWith("Задачи по пунктам посреднику:")) {
             taskContent.tasks = line;
         } else if (line.startsWith("Проверка и оценивание посреднику:")) {
-            taskContent.check = line;
+            const oldCheck = line;
+            const check = oldCheck.slice(33);
+            taskContent.check = check;
         } else if (line.startsWith("Примечания посреднику:")) {
-            taskContent.notes = line;
+            const oldNotes = line;
+            const notes = oldNotes.slice(22);
+            taskContent.notes = notes;
         }
     }
 
@@ -154,6 +158,7 @@ function createTaskParagraph(task) {
                     new docx.TextRun({
                         text: task.title,
                         bold: true,
+                        size: 24,
                     })
                 ]
             }),
@@ -186,7 +191,12 @@ function createTaskParagraph(task) {
         for (let i =0;i<task.text.length;i++) {
             result.push(        
                 new docx.Paragraph({
-                text: `     ${task.text[i]}`,
+                children: [
+                    new docx.TextRun({
+                        text: `     ${task.text[i]}`,
+                        size: 24,
+                    }),
+                ],
                 alignment: docx.AlignmentType.LEFT,
                 spacing: {before: 200},
                 outlineLevel: 0,
@@ -196,6 +206,58 @@ function createTaskParagraph(task) {
         let result2 = result.concat([
             new docx.Paragraph("", { spacing: { before: 200 }}),
     
+            /*
+            new docx.Table({
+                borders: {
+                    BorderOptions: {
+                        top: {
+                            size: 0,
+                            color: "ffffff",
+                        },
+                        bottom: {
+                            size: 0,
+                            color: "ffffff",
+                        },
+                        left: {
+                            size: 0,
+                            color: "ffffff",
+                        },
+                        right: {
+                            size: 0,
+                            color: "ffffff",
+                        },
+                    }
+                },
+               // width: {
+               //     size: 4535,
+               //     type: docx.WidthType.DXA,
+               // },
+                rows: [
+                    new docx.TableRow({
+                        children: [
+                            new docx.TableCell({
+                                children: [new docx.Paragraph({
+                                    alignment: docx.AlignmentType.START,
+                                    children: [
+                                        new docx.TextRun("Начальник штаба игры"),
+                                    ],
+                                })],
+                            }),
+                            new docx.TableCell({
+                                children: [new docx.Paragraph({
+                                    alignment: docx.AlignmentType.END,
+                                    children: [
+                                        new docx.TextRun("____________/Корнеева Е.И",),
+                                    ],
+                                })],
+                            }),
+                        ],
+                    }),
+                ]
+            }),
+            */
+
+
             new docx.Paragraph({
                 alignment: docx.AlignmentType.justified,
                 children: [
@@ -274,17 +336,58 @@ function createTaskParagraph(task) {
                     })
                 ]
             }),
+        ]);
+
+        //Для посредника
+        if (task.check.length !== 0) {
+            result2.push(
+                new docx.Paragraph({
+                    alignment: docx.AlignmentType.LEFT,
+                    spacing: { before: 200 },
+                    children: [
+                        new docx.TextRun({
+                            text: 'Проверка:',
+                            size: 24,
+                            bold: true,
+                        }),
+                        new docx.TextRun({
+                            text: task.check,
+                            size: 24,
+                            bold: true,
+                        }),
+                    ]
+                }),
+            );
+        }
+        if (task.notes.length !== 0) {
+            result2.push(
+                new docx.Paragraph({
+                    alignment: docx.AlignmentType.LEFT,
+                    spacing: { before: 200 },
+                    children: [
+                        new docx.TextRun({
+                            text: 'Примечания:',
+                            size: 24,
+                            bold: true,
+                        }),
+                        new docx.TextRun({
+                            text: task.notes,
+                            size: 24,
+                        }),
+                    ]
+                }),
+            );
+        }
+
+            
+            
+        result2.push(new docx.Paragraph("", { pageBreakAfter: true, pageBreak: true }));    
             
             
             
-            
-            
-            
-            
-            
-            new docx.Paragraph("", { pageBreakAfter: true, pageBreak: true }), // Разрыв страницы
-            new docx.PageBreak(),
-        ])
+           // new docx.Paragraph("", { pageBreakAfter: true, pageBreak: true }), // Разрыв страницы
+           // new docx.PageBreak(),
+
 
         console.log(result2)
 
