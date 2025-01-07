@@ -429,6 +429,13 @@ function createTaskParagraph(task) {
                             size: 20,
                             bold: true,
                         }),
+                    ]
+                }),
+            );
+            result2.push(
+                new docx.Paragraph({
+                    alignment: docx.AlignmentType.LEFT,
+                    children: [
                         new docx.TextRun({
                             text: task.notes,
                             size: 20,
