@@ -212,7 +212,7 @@ function createTaskParagraph(task) {
         )}
 
         let result2 = result.concat([
-            new docx.Paragraph("", { spacing: { before: 200 }}),
+            new docx.Paragraph({ spacing: { before: 400 }}),
     
             /*
             new docx.Table({
