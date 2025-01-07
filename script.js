@@ -338,6 +338,25 @@ function createTaskParagraph(task) {
             }),
         ]);
 
+        result2.push(  
+            new docx.Paragraph({
+                spacing: { before: 200 },
+            }) );
+
+        for (let i =0;i<task.text.length;i++) {
+            result2.push(        
+                new docx.Paragraph({
+                children: [
+                    new docx.TextRun({
+                        text: `     ${task.text[i]}`,
+                        size: 18,
+                    }),
+                ],
+                alignment: docx.AlignmentType.LEFT,
+                outlineLevel: 0,
+            }),
+        )}
+
         //Для посредника
         if (task.check.length !== 0) {
             result2.push(
