@@ -172,7 +172,15 @@ function createTaskParagraph(task) {
                 text: task.team,
                 alignment: docx.AlignmentType.LEFT,
             }),
-
+            new docx.Paragraph({
+                alignment: docx.AlignmentType.LEFT,
+                children: [
+                    new docx.TextRun({
+                        text: 'Посредник: _________________',
+                        size: 20,
+                    })
+                ]
+            }),
             new docx.Paragraph({
                 text: task.squad,
                 alignment: docx.AlignmentType.LEFT,
