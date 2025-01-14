@@ -112,7 +112,9 @@ function parseTasks(text) {
         } else if (line.startsWith("Задача посреднику:")) {
             const oldTask = line;
             const task = oldTask.slice(18);
-            taskContent.tasks.push(task);
+            if (task !== '') {
+                taskContent.tasks.push(task);
+            }
         } else if (line.startsWith("Проверка и оценивание посреднику:")) {
             const oldCheck = line;
             const check = oldCheck.slice(33);
@@ -293,6 +295,15 @@ function createTaskParagraph(task) {
                 children: [
                     new docx.TextRun({
                         text: task.team,
+                        size: 20,
+                    })
+                ]
+            }),
+            new docx.Paragraph({
+                alignment: docx.AlignmentType.LEFT,
+                children: [
+                    new docx.TextRun({
+                        text: 'Посредник: _________________',
                         size: 20,
                     })
                 ]
