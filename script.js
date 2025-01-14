@@ -171,15 +171,6 @@ function createTaskParagraph(task) {
                 alignment: docx.AlignmentType.LEFT,
             }),
 
-                new docx.Paragraph({
-                alignment: docx.AlignmentType.LEFT,
-                children: [
-                    new docx.TextRun({
-                        text: 'Посредник: _________________',
-                    })
-                ]
-            }),
-
             new docx.Paragraph({
                 text: task.squad,
                 alignment: docx.AlignmentType.LEFT,
@@ -306,18 +297,6 @@ function createTaskParagraph(task) {
                     })
                 ]
             }),
-
-            new docx.Paragraph({
-                alignment: docx.AlignmentType.LEFT,
-                children: [
-                    new docx.TextRun({
-                        text: 'Посредник: _________________',
-                        size: 20,
-                    })
-                ]
-            }),
-
-            
             new docx.Paragraph({
                 alignment: docx.AlignmentType.LEFT,
                 children: [
@@ -465,8 +444,6 @@ function createTaskParagraph(task) {
                 }),
             );
         }
-
-            
             
         result2.push(new docx.Paragraph({pageBreakBefore: true, keepLines: true}));    
             
