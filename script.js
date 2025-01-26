@@ -65,6 +65,7 @@ function parseTasks(text) {
         stitching: "",
         time: "",
         text: [],
+        tasksTeam: [],
         tasks: [],
         check: "",
         notes: ""
@@ -87,6 +88,7 @@ function parseTasks(text) {
                     stitching: "",
                     time: "",
                     text: [],
+                    tasksTeam: [],
                     tasks: [],
                     check: "",
                     notes: "" };
@@ -109,6 +111,12 @@ function parseTasks(text) {
             const oldText = line;
             const text = oldText.slice(6);
             taskContent.text.push(text);
+        } else if (line.startsWith("Задача взводу для посредника:")) {
+            const oldTask = line;
+            const task = oldTask.slice(29);
+            if (task !== '') {
+                taskContent.tasksTeam.push(task);
+            }
         } else if (line.startsWith("Задача посреднику:")) {
             const oldTask = line;
             const task = oldTask.slice(18);
@@ -392,7 +400,7 @@ function createTaskParagraph(task) {
                     alignment: docx.AlignmentType.LEFT,
                     children: [
                         new docx.TextRun({
-                            text: 'Заметки для посредника:',
+                            text: 'Задачи посредника:',
                             size: 20,
                             bold: true,
                         }),
@@ -413,12 +421,37 @@ function createTaskParagraph(task) {
                     )
                 }
             }
-
-
-
-
-
         }
+
+            if (task.tasksTeam.length !== 0) {
+                result2.push(
+                    new docx.Paragraph({
+                        alignment: docx.AlignmentType.LEFT,
+                        children: [
+                            new docx.TextRun({
+                                text: 'Задачи для взвода:',
+                                size: 20,
+                                bold: true,
+                            }),
+                        ]
+                    }),
+                );
+                if (task.tasksTeam.length !== 0) {
+                    for (let i=0; i<task.tasksTeam.length; i++) {
+                        result2.push(
+                            new docx.Paragraph({
+                                text: task.tasksTeam[i],
+                                alignment: docx.AlignmentType.LEFT,
+                                bullet: {
+                                    level: 0
+                                }
+                            }
+                            )
+                        )
+                    }
+                }
+        }
+
         if (task.check.length !== 0) {
             result2.push(
                 new docx.Paragraph({
